@@ -10,6 +10,7 @@ int ft_strlen(char *str)
 {
 	int i;
 
+	i = 0;
 	while (str[i] != '\0')
 		i++;
 	
@@ -72,7 +73,7 @@ int main(int argc, char **argv)
 	if ((ptr_file = fopen(argv[1], "r")) == NULL)
 		return (message_error(ptr_file, ERR_FILE_CRPT));
 
-	if ((fscanf(ptr_file, "%d %d %c", &z.w, &z.w, &z.bg)) != 3)
+	if ((fscanf(ptr_file, "%d %d %c", &z.w, &z.h, &z.bg)) != 3)
 		return (message_error(ptr_file, ERR_FILE_CRPT));
 
 	if (z.w <= 0 || z.w > 300 || z.h <= 0 || z.h > 300)
@@ -84,17 +85,23 @@ int main(int argc, char **argv)
 
 	while(1)
 	{
-		res = fscanf(ptr_file, "%c %f %f %f %f %c\n", &s.type, &s.x, &s.y, &s.w, &s.h, &s.c	);
+		res = fscanf(ptr_file, "\n%c %f %f %f %f %c", &s.type, &s.x, &s.y, &s.w, &s.h, &s.c	);
 		if(res == -1)
 			return(message_error(ptr_file, ERR_END_OF_FILE));
 		else if (res != 6 || s.w <= 0 || s.h <= 0 || (s.type != 'r' && s.type != 'R'))
 			return (message_error(ptr_file, ERR_FILE_CRPT));
 
-		for (int x = 0;)
-
-
-
-
+		for (int y = 0; y < z.h; y++)
+		{
+			for (int x = 0; x < z.w; x++)
+			{
+				in_out_on = pixel_status(x, y, &s);
+				if (s.type == 'r' && in_out_on == PXL_ON_EDGE)
+					map[x + y * z.w] = s.c;
+				if (s.type == 'R' && in_out_on)
+					map[x + y * z.w] = s.c;
+			}
+		}
 	}
 }
 // ----------------------------------------------------------------------------
